@@ -1,6 +1,6 @@
 export { listen } from './core/listen.js';
 export { register } from './core/register.js';
-export { setup } from './electron/index.js';
+export { setup, reset } from './electron/index.js';
 export {
   START_NOTIFICATION_SERVICE,
   NOTIFICATION_SERVICE_STARTED,
