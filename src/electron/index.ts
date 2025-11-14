@@ -16,7 +16,7 @@ const config = new ElectronStore();
 
 // To be sure that start is called only once
 let started = false;
-let client = null;
+let client:any = null;
 
 // To be called from the main process
 function setup(webContents: WebContents): void {
