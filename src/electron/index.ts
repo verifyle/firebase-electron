@@ -16,6 +16,7 @@ const config = new ElectronStore();
 
 // To be sure that start is called only once
 let started = false;
+let client = null;
 
 // To be called from the main process
 function setup(webContents: WebContents): void {
@@ -53,7 +54,7 @@ function setup(webContents: WebContents): void {
         webContents.send(TOKEN_UPDATED, credentials.fcm.token);
       }
       // Listen for GCM/FCM notifications
-      await listen({ ...credentials, persistentIds }, onNotification(webContents));
+      client = await listen({ ...credentials, persistentIds }, onNotification(webContents));
       // Notify the renderer process that we are listening for notifications
       webContents.send(NOTIFICATION_SERVICE_STARTED, credentials.fcm.token);
     } catch (e) {
@@ -62,6 +63,17 @@ function setup(webContents: WebContents): void {
       webContents.send(NOTIFICATION_SERVICE_ERROR, (e as Error).message);
     }
   });
+}
+
+function reset() {
+  config.set('credentials', null);
+  config.set('firebaseCredentials', null);
+  config.set('persistentIds', null);
+  started = false;
+
+  if(client){
+    client.destroy();
+  }
 }
 
 // Will be called on new notification
@@ -85,4 +97,5 @@ export {
   START_NOTIFICATION_SERVICE,
   TOKEN_UPDATED,
   setup,
+  reset
 };
